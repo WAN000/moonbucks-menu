@@ -14,7 +14,7 @@
 // TODO 메뉴 삭제
 // - [x] 메뉴 삭제 버튼을 클릭하면 클릭 이벤트가 발생, 메뉴 삭제를 한다.
 // - [x] 메뉴 삭제시 confirm을 이용하며 확인 버튼 클릭시 메뉴가 삭제된다.
-// - [x] 총 메뉴 갯수를 count하여 상단에 보여준다.
+// - [x] 총 메뉴 갯수를 count하여 상단에 보여준다..
 
 const $ = (selector) => document.querySelector(selector);
 

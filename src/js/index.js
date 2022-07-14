@@ -37,10 +37,11 @@
 // - [x] 에스프레소 메뉴를 페이지에 그려준다.
 
 // TODO 품절 상태인 메뉴 관리
-// - [ ] 품절 버튼을 추가한다.
-// - [ ] 품절 버튼 클릭 시 localStorage에 품절 상태 값을 저장한다.
-// - [ ] 품절 버튼 클릭 시 sold-out class를 추가한다.ㅎ
-// - [ ] sold-out class가 추가되면 상태를 변경한다.
+// - [x] 품절 버튼을 추가한다.
+// - [x] 품절 버튼 클릭 시 localStorage에 품절 상태 값을 저장한다.
+// - [x] 품절 버튼 클릭 시 sold-out class를 추가한다.ㅎ
+// - [x] sold-out class가 추가되면 상태를 변경한다.
+
 import { $ } from "./utils/dom.js";
 import store from "./store/index.js";
 
@@ -123,6 +124,7 @@ function App() {
     );
 
     this.menu[this.currentCategory][menuId].name = updatedMenuName;
+
     store.setLocalStorage(this.menu);
     render();
   };

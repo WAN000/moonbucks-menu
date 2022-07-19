@@ -45,6 +45,30 @@
 import { $ } from "./utils/dom.js";
 import store from "./store/index.js";
 
+const BASE_URL = "http://localhost:3000/api";
+
+const MenuApi = {
+  async getAllMenuByCategory(category) {
+    const response = await fetch(`${BASE_URL}/category/${category}/menu`);
+    return response.json();
+  },
+
+  async createMenu(category, menuName) {
+    const response = await fetch(`${BASE_URL}/category/${category}/menu`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name: menuName }),
+    }).then((response) => {
+      return response.json();
+    });
+    if (!response.ok) {
+      console.log("에러가 발생했습니다.");
+    }
+  },
+};
+
 function App() {
   this.menu = {
     espresso: [],
@@ -56,12 +80,15 @@ function App() {
 
   this.currentCategory = "espresso";
 
-  this.init = () => {
-    if (store.getLocalStorage()) {
-      this.menu = store.getLocalStorage();
-      initEventListeners();
-    }
+  this.init = async () => {
+    // if (store.getLocalStorage()) {
+    //   this.menu = store.getLocalStorage();
+    // }
+    this.menu[this.currentCategory] = await MenuApi.getAllMenuByCategory(
+      this.currentCategory
+    );
     render();
+    initEventListeners();
   };
 
   const render = () => {
@@ -102,16 +129,33 @@ function App() {
     $(".menu-count").innerText = `총 ${menuCount}개`;
   };
 
-  const addMenuName = () => {
+  const addMenuName = async () => {
     if ($("#menu-name").value === "") {
       return alert("메뉴를 입력해 주세요.");
     }
 
     const menuName = $("#menu-name").value;
-    this.menu[this.currentCategory].push({ name: menuName });
-    store.setLocalStorage(this.menu);
+
+    await MenuApi.createMenu(this.currentCategory, menuName);
+    // await fetch(`${BASE_URL}/category/${this.currentCategory}/menu`, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({ name: menuName }),
+    // }).then((response) => {
+    //   return response.json();
+    // });
+
+    this.menu[this.currentCategory] = await MenuApi.getAllMenuByCategory(
+      this.currentCategory
+    );
     render();
     $("#menu-name").value = "";
+
+    // store.setLocalStorage(this.menu);
+    // render();
+    // $("#menu-name").value = "";
   };
 
   const updateMenuName = (e) => {
@@ -178,13 +222,14 @@ function App() {
       }
     });
 
-    $("nav").addEventListener("click", (e) => {
+    $("nav").addEventListener("click", async (e) => {
       const isCategoryButton =
         e.target.classList.contains("cafe-category-name");
       if (isCategoryButton) {
         const categoryName = e.target.dataset.categoryName;
         this.currentCategory = categoryName;
         $("#category-title").innerText = `${e.target.innerText} 메뉴 관리`;
+        await MenuApi.getAllMenuByCategory(this.currentCategory);
         render();
       }
     });
